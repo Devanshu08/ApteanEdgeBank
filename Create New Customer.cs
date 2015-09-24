@@ -41,14 +41,14 @@ namespace ApteanEdgeBank
 
                         string FirstName = firstNameBox.Text;
                         string LastName = lastNameBox.Text;
-                        string MiddleName = middleNameBox.Text;
+                        //string MiddleName = middleNameBox.Text;
                         string DateOfBirth = dateOfBirthBox.Text;
                         string ContactNumber = contactNumberBox.Text;
                         if (!nw.DoCustomerExists(FirstName, LastName, DateOfBirth))
                         {
                             if (validFlag)
                             {
-                                nw.AddNewCutomer(FirstName, MiddleName, LastName, DateTime.Parse(DateOfBirth));
+                                nw.AddNewCutomer(FirstName, LastName, DateTime.Parse(DateOfBirth));
                                 nw.AddContactNumber(ContactNumber);
                             }
                             else
@@ -78,6 +78,7 @@ namespace ApteanEdgeBank
         private void Create_New_Customer_Load(object sender, EventArgs e)
         {
             monthCalendar1.Hide();
+            button1.Hide();
         }
 
         private void dateOfBirthBox_TextChanged(object sender, EventArgs e)
@@ -142,6 +143,26 @@ namespace ApteanEdgeBank
                 MessageBox.Show("Please Enter valid 10 digit number");
             }
 
+        }
+
+        private void dateOfBirthBox_TabIndexChanged(object sender, EventArgs e)
+        {
+            monthCalendar1.Show();
+        }
+
+        private void dateOfBirthBox_CursorChanged(object sender, EventArgs e)
+        {
+            monthCalendar1.Show();
+        }
+
+        private void dateOfBirthBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            monthCalendar1.Show();
+        }
+
+        private void dateOfBirthBox_Enter(object sender, EventArgs e)
+        {
+            monthCalendar1.Show();
         }
     }
 }

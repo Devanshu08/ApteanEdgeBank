@@ -13,9 +13,11 @@ namespace ApteanEdgeBank
     public partial class NewAccount : Form
     {
         public string AccountType = null;
-        public string CustomerID = null;
-        public string initialBalance = null;
-        public string AccountID = null;
+       public int CustomerID = 0;
+       //public string initialBalance = null;
+       public int AccountID = 0;
+
+
         public NewAccount()
         {
             InitializeComponent();
@@ -44,7 +46,10 @@ namespace ApteanEdgeBank
         {
 
             if (CustomerAvailabilityCheck()) { MessageBox.Show("Customer Found"); }
-            else { MessageBox.Show("Customer Not Found, Please Create Customer First"); }
+            else { 
+                MessageBox.Show("Customer Not Found, Please Create Customer First");
+                button2.Enabled = false;
+            }
 
 
 
@@ -73,17 +78,41 @@ namespace ApteanEdgeBank
         {
             if (CustomerAvailabilityCheck())
             {
-                CustomerID = textBox1.Text;
-                initialBalance = textBox2.Text;
+
+
+                CustomerID = Convert.ToInt32(textBox1.Text);
+                //AccountID=0;
+                if (AccountType == "'CA'")
+                {
+                    Account A = new ChequingAccount();
+                    AccountID=A.Create(AccountType,DateTime.Now, Convert.ToDouble(textBox2.Text));
+                    UserDAO udao = new UserDAO();
+                    udao.InsertData("use ApteanEdgeBank insert into CustomerAccount values(" + CustomerID + "," + AccountID + ")", UserDAO.connectionString);
+                    MessageBox.Show("Account added successfully!");
+                }
+
+                else if (AccountType == "'TFS'")
+                {
+                    Account A = new TaxFreeSavingsAccount();
+                    AccountID = A.Create(AccountType, DateTime.Now, Convert.ToDouble(textBox2.Text));
+                    UserDAO udao = new UserDAO();
+                    udao.InsertData("use ApteanEdgeBank insert into CustomerAccount values(" + CustomerID + "," + AccountID + ")", UserDAO.connectionString);
+                    MessageBox.Show("Account added successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Not a Valid account Type");
+                }
+                /*initialBalance = textBox2.Text;
 
                 MessageBox.Show("Account Type is " + AccountType + "For Customer ID " + CustomerID + " With initial Balance " + initialBalance);
                 UserDAO udao = new UserDAO();
                 DataTable dataTable = new DataTable();
                 udao.InsertData("use ApteanEdgeBank insert into Account (AccountType,AccountBalance,DateOfOpening,DateOfClosing) values(" + AccountType + "," + initialBalance + "," + "cast(getdate() as date),null)", UserDAO.connectionString);
                 dataTable = udao.GetData("use ApteanEdgeBank select max(AccountID) as max from Account", UserDAO.connectionString);
-                AccountID = Convert.ToString(dataTable.Rows[0]["max"]);
+                AccountID = Convert.ToString(dataTable.Rows[0]["max"]);*/
 
-                udao.InsertData("use ApteanEdgeBank insert into CustomerAccount values(" + CustomerID + "," + AccountID + ")", UserDAO.connectionString);
+                
             }
             else
             {
@@ -93,7 +122,7 @@ namespace ApteanEdgeBank
         }
         private bool CustomerAvailabilityCheck()
         {
-            UserDAO udao = new UserDAO();
+            /*UserDAO udao = new UserDAO();
             DataTable dataTable = new DataTable();
             bool foundFlag = false;
             string customerID = textBox1.Text;
@@ -117,7 +146,34 @@ namespace ApteanEdgeBank
             else
             {
                  return false;
+            }*/
+
+            Customer cus = new Customer();
+            if (cus.CheckCustomerByID(Convert.ToInt32(textBox1.Text)))
+            {
+                return true;
             }
+            return false;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NewAccount_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateOfOpening_ValueChanged(object sender, EventArgs e)
+        {
+
         }
         }
     }

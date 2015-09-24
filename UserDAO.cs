@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data;
+using System.Windows.Forms;
 
 namespace ApteanEdgeBank
 {
     class UserDAO
     {
-        public static string connectionString = "Data Source=WS003LT1552PRD;Initial Catalog=AdventureWorks;User=sa;Password=abc-123";
+        public static string connectionString = "Data Source=WS003LT1553PRD;Initial Catalog=ApteanEdgeBank;User=sa;Password=abc-123";
         SqlConnection conn = null;
         string myQuery = null;
         SqlCommand cmd = null;
@@ -67,7 +68,7 @@ namespace ApteanEdgeBank
                 
               
                
-                myQuery = "use ApteanEdgeBank insert into customer (FirstName,LastName,DateOfJoining,DateOfBirth) values(" +"'"+ Fname + "'"+","+"'" + Lname +"'"+ "," + "cast(getdate() as date)" + "," +"'"+ dateOfBirth+"'" + ")"; //insert into Customer (FirstName,LastName,DateOfJoining,DateOfBirth)
+                myQuery = "use ApteanEdgeBank insert into customer (FirstName,LastName,DateOfJoining,DateOfBirth,MiddleName) values(" +"'"+ Fname + "'"+","+"'" + Lname +"'"+ "," + "cast(getdate() as date)" + "," +"'"+ dateOfBirth+"'" + ")"; //insert into Customer (FirstName,LastName,DateOfJoining,DateOfBirth)
 
                 InsertData(myQuery, connectionString);
 
@@ -88,6 +89,8 @@ namespace ApteanEdgeBank
             }
             return true;
         }
+
+
         public DataTable GetData(string myQuery,string connectionString)   // data returned for the myQery will be returned as a DataTable
         {
             try
@@ -151,6 +154,41 @@ namespace ApteanEdgeBank
             }
 
 
+        }
+
+        public void UpdateData(string myQuery, string connectionString)
+        {
+            try
+            {
+                SqlConnection myConnection = new SqlConnection(connectionString);
+                
+                //Create the command and tell you will provide a SQL query
+                SqlCommand cmd = new SqlCommand(myQuery, myConnection);
+                //create adapter
+                //int rows = cmd.ExecuteNonQuery();
+              // SqlDataAdapter myAdapter = new SqlDataAdapter(cmd);
+                
+                //open the connection
+                myConnection.Open();
+                int rows = cmd.ExecuteNonQuery();
+                if (rows > 0)
+                {
+                    MessageBox.Show(rows + " Rows affected");
+                }
+                else
+                {
+                    MessageBox.Show("Update unsuccessful!");
+                }
+                //fill data in command
+               //myAdapter.Fill(dt);
+
+                //close the connection
+                myConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
         }
 
 
